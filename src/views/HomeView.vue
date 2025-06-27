@@ -1,32 +1,46 @@
 <script setup>
 import { ref } from 'vue'
 
-const someText = ref('')
+const text = ref('')
+const cookieValue = ref(null)
 
-const handleSubmit = () => {
-  console.log('submit ==>', {
-    someText: someText.value,
-  })
+const saveText = () => {
+  $cookies.set('zeCookie', text.value)
+  text.value = ''
+}
+
+const getCookie = () => {
+  const textFromCookie = $cookies.get('zeCookie')
+  if (!textFromCookie) {
+    alert('No cookie')
+  } else {
+    cookieValue.value = textFromCookie
+  }
+}
+
+const deleteCookie = () => {
+  $cookies.remove('zeCookie')
+  text.value = ''
+  cookieValue.value = null
 }
 </script>
 
 <template>
   <main>
-    <h1>Page d'accueil</h1>
-    <h2>Enter a text</h2>
-    <form @submit.prevent="handleSubmit">
-      <label for="someText"></label
-      ><input type="text" name="someText" id="someText" v-model="someText" />
-      <button>Save text in cookie</button>
-      <button>Get cookie</button>
-      <button>Delete cookie</button>
-      <p>No cookie saved !</p>
-    </form>
+    <h1>Enter the text</h1>
+    <div>
+      <input type="text" name="text" id="text" v-model="text" />
+      <button @click="saveText">Save text in cookie</button>
+      <button @click="getCookie">Get cookie</button>
+      <button @click="deleteCookie">Delete cookie</button>
+      <p v-if="!cookieValue">No cookie saved !</p>
+      <p v-else>Yeah cookie ! {{ cookieValue }}</p>
+    </div>
   </main>
 </template>
 
 <style scoped>
-form {
+div {
   display: flex;
   flex-direction: column;
   gap: 20px;
